@@ -20,7 +20,7 @@ const withBasePath = (path: string) =>
   `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
 
 const frameSrc = (index: number) =>
-  withBasePath(`/sequence/WB${index.toString().padStart(3, "0")}.png`);
+  withBasePath(`/sequence-webp/WB${index.toString().padStart(3, "0")}.webp`);
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
