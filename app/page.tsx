@@ -15,8 +15,12 @@ const smoothstep = (edge0: number, edge1: number, x: number) => {
   return t * t * (3 - 2 * t);
 };
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const withBasePath = (path: string) =>
+  `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
+
 const frameSrc = (index: number) =>
-  `/sequence/WB${index.toString().padStart(3, "0")}.png`;
+  withBasePath(`/sequence/WB${index.toString().padStart(3, "0")}.png`);
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -212,7 +216,7 @@ export default function Home() {
         <div className="mx-auto flex h-[84px] max-w-[1400px] items-center justify-between px-8">
           <div className="relative flex h-6 w-[140px] items-center">
             <NextImage
-              src="/branding/Teachmint-X-Blue.png"
+              src={withBasePath("/branding/Teachmint-X-Blue.png")}
               alt="Teachmint X"
               width={132}
               height={29}
@@ -221,7 +225,7 @@ export default function Home() {
               style={{ opacity: 1 - logoSwap }}
             />
             <NextImage
-              src="/branding/Teachmint-X-White.png"
+              src={withBasePath("/branding/Teachmint-X-White.png")}
               alt="Teachmint X"
               width={132}
               height={29}
@@ -402,11 +406,11 @@ export default function Home() {
                 className="relative min-h-[300px] rounded-3xl bg-white p-7 shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-300 hover:-translate-y-1"
               >
                 <div className="mb-8">
-                  <img
-                    src={card.icon}
-                    alt=""
-                    className="h-12 w-12 object-contain"
-                  />
+                <img
+                  src={withBasePath(card.icon)}
+                  alt=""
+                  className="h-12 w-12 object-contain"
+                />
                 </div>
                 <h4
                   className="text-2xl font-semibold leading-tight text-[#1b1b1d]"
@@ -467,7 +471,7 @@ export default function Home() {
                 className="relative h-[420px] w-[280px] flex-shrink-0 overflow-hidden rounded-[28px] bg-black text-white shadow-[0_18px_60px_rgba(0,0,0,0.15)]"
                 style={{ scrollSnapAlign: "start" }}
               >
-                <img src={card.src} alt="" className="h-full w-full object-cover" />
+                <img src={withBasePath(card.src)} alt="" className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40" />
                 <div className="absolute left-6 top-6 text-xs font-medium uppercase tracking-[0.2em] text-white/80">
                   Feature
@@ -591,7 +595,7 @@ export default function Home() {
             <div className="flex flex-col items-center justify-between gap-6 text-sm text-white/70 md:flex-row">
               <div className="flex items-center">
                 <img
-                  src="/branding/Teachmint-X.png"
+                  src={withBasePath("/branding/Teachmint-X.png")}
                   alt="Teachmint X"
                   className="h-6 w-auto"
                 />
@@ -608,7 +612,7 @@ export default function Home() {
                     key={icon.name}
                     className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30"
                   >
-                    <img src={icon.src} alt={icon.name} className="h-8 w-8" />
+                    <img src={withBasePath(icon.src)} alt={icon.name} className="h-8 w-8" />
                   </div>
                 ))}
               </div>
