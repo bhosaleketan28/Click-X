@@ -3,7 +3,7 @@
 import NextImage from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const TOTAL_FRAMES = 180;
+const TOTAL_FRAMES = 120;
 const FRAME_BG = "#f5f5f5";
 const SCROLL_HEIGHT = 400;
 
@@ -20,7 +20,7 @@ const withBasePath = (path: string) =>
   `${BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
 
 const frameSrc = (index: number) =>
-  withBasePath(`/sequence-webp-180/WB${index.toString().padStart(3, "0")}.webp`);
+  withBasePath(`/sequence-webp-120/WB${index.toString().padStart(3, "0")}.webp`);
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -82,7 +82,7 @@ export default function Home() {
 
     const loadImages = () => {
       imagesRef.current = new Array(TOTAL_FRAMES).fill(null);
-      const priorityCount = 12;
+      const priorityCount = 10;
 
       const loadImage = (index: number) =>
         new Promise<void>((resolve) => {
