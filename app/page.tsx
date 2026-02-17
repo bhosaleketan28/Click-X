@@ -488,15 +488,70 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="bg-black px-6 py-20 text-white sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+            <h3 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
+              Frequently Asked Questions
+            </h3>
+            <p className="max-w-xl text-sm text-white/60">
+              Everything you need to know about Click X and how it works with
+              Teachmint X.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4">
+            {[
+              {
+                q: "What is Click X?",
+                a: "Click X is a student response clicker that allows every student to interact with lessons in real time, ensuring full participation and instant performance insights."
+              },
+              {
+                q: "Does Click X need internet?",
+                a: "No, internet is not required. Click X connects seamlessly with the base station integrated with Teachmint X."
+              },
+              {
+                q: "How does Click X help teachers?",
+                a: "Teachers can launch quizzes, polls, and assessments, and get student-wise, real-time insights to track understanding and improve lessons."
+              },
+              {
+                q: "Can Click X be used for all types of lessons?",
+                a: "Yes! It works for live quizzes, concept checks, exit tickets, polls, revision sessions, and exam preparation."
+              },
+              {
+                q: "Do teachers get instant reports?",
+                a: "Yes, all student responses are captured instantly and displayed on the Teachmint X panel for real-time performance tracking."
+              },
+              {
+                q: "Does Click X work with personal devices?",
+                a: "No, Click X is a dedicated device that works seamlessly with Teachmint X, keeping students focused and distraction-free."
+              }
+            ].map((item) => (
+              <details
+                key={item.q}
+                className="group rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5 transition hover:border-white/20"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-base font-medium text-white">
+                  <span>{item.q}</span>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-lg text-white/80 transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 text-sm text-white/70">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-inkSoft px-8 py-24 text-center">
         <div className="mx-auto max-w-4xl">
           <h3 className="text-3xl font-semibold text-white/90">
             Precision-built for the modern classroom
           </h3>
           <p className="mt-4 text-white/60">
-            Click X pairs cinematic hardware with AI-grade intelligence. From instant
-            response capture to adaptive insights, every lesson becomes a living
-            conversation.
+            Click X pairs with AI-grade intelligence. From instant response capture to
+            adaptive insights, every lesson becomes a living conversation.
           </p>
         </div>
       </section>
