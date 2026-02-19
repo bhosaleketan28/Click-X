@@ -82,35 +82,6 @@ export default function Home() {
 
     const loadImages = () => {
       imagesRef.current = new Array(TOTAL_FRAMES).fill(null);
-      const priorityCount = 10;
-
-      const loadImage = (index: number) =>
-        new Promise<void>((resolve) => {
-          const img = new window.Image();
-          img.src = frameSrc(index);
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-          imagesRef.current[index] = img;
-        });
-
-      const loadPriority = async () => {
-        for (let i = 0; i < priorityCount; i += 1) {
-          await loadImage(i);
-        }
-      };
-
-      const loadRest = async () => {
-        for (let i = priorityCount; i < TOTAL_FRAMES; i += 1) {
-          await loadImage(i);
-          if ("requestIdleCallback" in window) {
-            await new Promise<void>((resolve) =>
-              (window as any).requestIdleCallback(() => resolve())
-            );
-          }
-        }
-      };
-
-      loadPriority().then(loadRest);
     };
 
     const canvas = canvasRef.current;
@@ -128,22 +99,60 @@ export default function Home() {
       ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
     };
 
+    const cacheOrder: number[] = [];
+    const loading = new Set<number>();
+    const maxCache = 36;
+    let lastRendered: HTMLImageElement | null = null;
+
+    const touch = (index: number) => {
+      const pos = cacheOrder.indexOf(index);
+      if (pos >= 0) cacheOrder.splice(pos, 1);
+      cacheOrder.push(index);
+      if (cacheOrder.length > maxCache) {
+        const drop = cacheOrder.shift();
+        if (drop !== undefined) imagesRef.current[drop] = null;
+      }
+    };
+
+    const loadImage = (index: number) => {
+      if (index < 0 || index >= TOTAL_FRAMES) return;
+      if (imagesRef.current[index] || loading.has(index)) return;
+      loading.add(index);
+      const img = new window.Image();
+      img.src = frameSrc(index);
+      img.onload = () => {
+        imagesRef.current[index] = img;
+        loading.delete(index);
+        touch(index);
+      };
+      img.onerror = () => loading.delete(index);
+    };
+
     const renderFrame = (index: number) => {
       const img = imagesRef.current[index];
-      if (!img || !img.complete) return;
+      if (!img || !img.complete) {
+        loadImage(index);
+        loadImage(index + 1);
+        loadImage(index + 2);
+        loadImage(index - 1);
+        if (!lastRendered) return;
+      }
 
       const canvasW = canvas.width / window.devicePixelRatio;
       const canvasH = canvas.height / window.devicePixelRatio;
-      const scale = Math.min(canvasW / img.width, canvasH / img.height);
-      const drawW = img.width * scale;
-      const drawH = img.height * scale;
+      const drawImg = img && img.complete ? img : lastRendered;
+      if (!drawImg) return;
+      const scale = Math.min(canvasW / drawImg.width, canvasH / drawImg.height);
+      const drawW = drawImg.width * scale;
+      const drawH = drawImg.height * scale;
       const offsetX = (canvasW - drawW) / 2;
       const offsetY = (canvasH - drawH) / 2;
 
       ctx.clearRect(0, 0, canvasW, canvasH);
       ctx.fillStyle = FRAME_BG;
       ctx.fillRect(0, 0, canvasW, canvasH);
-      ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+      ctx.drawImage(drawImg, offsetX, offsetY, drawW, drawH);
+      lastRendered = drawImg;
     };
 
     let targetProgress = 0;
@@ -192,7 +201,10 @@ export default function Home() {
 
     const initial = new window.Image();
     initial.src = frameSrc(0);
-    initial.onload = () => renderFrame(0);
+    initial.onload = () => {
+      imagesRef.current[0] = initial;
+      renderFrame(0);
+    };
 
     window.addEventListener("resize", resize);
     window.addEventListener("scroll", handleScroll, { passive: true });
